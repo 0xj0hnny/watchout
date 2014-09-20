@@ -15,7 +15,7 @@ var randomPos = function(){
     return {
       colors: ["red", "blue", "green", "orange"],
       id: key,
-      fill: function(){return colors[Math.floor(Math.random() * 4)];},
+      fill: function(){return this.colors[Math.floor(Math.random() * 4)];},
       x: Math.random()*boardAttr.width,
       y: Math.random()*boardAttr.height
     }
@@ -43,10 +43,10 @@ function update(){
   // debugger;
   enemies.attr("class", "update")
          .transition()
-         .duration(750)
+         .duration(2500)
          .attr("cx", function(d){return d.x;})
          .attr("cy", function(d){return d.y;})
-         .style("fill", function(d){return d.fill});
+         .style("fill", function(d){return d.fill()});
   //Enter
   enemies.enter()
          .append("svg:circle")
@@ -56,7 +56,7 @@ function update(){
          .attr("cx", function(d){return d.x;})
          .attr("cy", function(d){return d.y;})
          .attr("r", enemy.radius)
-         .style("fill", function(d){return d.fill});
+         .style("fill", function(d){return d.fill()});
 
 
 }
@@ -67,6 +67,6 @@ function update(){
 
 setInterval(function(){
   update()
-}, 1000);
+}, 3000);
 
 
