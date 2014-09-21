@@ -38,24 +38,45 @@ function dragmove(d){
      .attr("cy", d3.event.y)
      .attr("cx", d3.event.x);
 }
+
 var drag = d3.behavior
              .drag()
              .origin(Object)
              .on("drag", dragmove);
 
-// function dragmove(d) {
-//   if (true) {
-//     d3.select(this)
-//           .attr("cx",
-//             d.cx = Math.max(0,
-//               Math.min(boardAttr.width - d.width,
-//                 d3.event.x)));
+// function collide(data){
+//   var element = d3.select(this);
+
+//   var startPosition = {
+//     cx: element.cx,
+//     cy: element.cy
 //   }
-//   if (true) {
-//      d3.select(this)
-//           .attr("cy", d.cy = Math.max(0, Math.min(boardAttr.height - d.height, d3.event.y)));
-//   }
+
+
+//   // select the element
+//   // get current position
+//   // find next positon
+//   //
+
+
+//   return function(t){
+//    //check collide();
+//    //set newpostion of the el using next post.
+//    console.log(t);
+//  }
 // }
+
+function checkCollide(node1, node2){
+  var checkNode1X = node1.getAttribute('cx');
+  var checkNode1Y = node1.getAttribute('cy');
+  var checkNode2X = node2.getAttribute('cx');
+  var checkNode2Y = node2.getAttribute('cy');
+  if(Math.sqrt(Math.pow(Math.abs(checkNode1X-checkNode2X),2)
+             + Math.pow(Math.abs(checkNode1Y-checkNode2Y),2)) < 15){
+    return true;
+  } else
+  return false;
+}
 
 
 function update(){
@@ -71,14 +92,14 @@ function update(){
                 .data(enemiesPosData);
   //Update Position
   // debugger;
-  enemies.attr("class", "update")
+  enemies.attr("class", "enemies")
          .transition()
          .duration(750)
          .attr("cx", function(d){return d.x;})
          .attr("cy", function(d){return d.y;})
          .style("fill", function(d){return d.fill()});
 
-   player.attr("class", "update")
+   player.attr("class", "player")
          .attr("cx", function(d){return d.x;})
          .attr("cy", function(d){return d.y;})
          .attr("r", function(d){return d.radius;})
@@ -91,7 +112,7 @@ function update(){
          .append("svg:circle")
          .transition()
          .duration(750)
-         .attr("class","enter")
+         .attr("class","enemies")
          .attr("cx", function(d){return d.x;})
          .attr("cy", function(d){return d.y;})
          .attr("r", enemy.radius)
@@ -99,7 +120,7 @@ function update(){
 
    player.enter()
          .append("svg:circle")
-         .attr("class","enter")
+         .attr("class","player")
          .attr("cx", function(d){return d.x;})
          .attr("cy", function(d){return d.y;})
          .attr("r", function(d){return d.radius;})
@@ -110,9 +131,25 @@ function update(){
 
 
 
-update();
-// console.log(update());
+//update();
 
+setInterval(function(){
+  $('.current span').text(parseFloat($('.current span').text()) + 5);
+  var enemies = d3.selectAll(".enemies")[0];
+  var player = d3.selectAll('.player')[0][0];
+  for(var i = 0; i < enemies.length; i++){
+    if(checkCollide(player, enemies[i])){
+      $('.current span').text(0);
+      $('.collisions span').text(parseFloat($('.collisions span').text())+ 1);
+      break;
+    } else {
+      if(parseFloat($('.current span').text()) > parseFloat($('.high span').text())){
+        $('.high span').text($('.current span').text());
+      }
+    }
+  }
+
+}, 50);
 
 setInterval(function(){
   update()
